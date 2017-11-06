@@ -1,0 +1,24 @@
+package other.destinations
+
+import groovy.transform.ToString
+import other.T_event
+
+@ToString(includeNames = true, includeFields = true)
+class T_destination_shell extends T_destination {
+
+    void store(T_event i_source_event) {
+        System.out.print(p_formatter.format_event(i_source_event))
+    }
+
+    @Override
+    T_destination clone_with_no_async() {
+        T_destination_shell l_result = new T_destination_shell()
+        l_result.p_is_auto_zip = p_is_auto_zip
+        l_result.p_formatter = p_formatter
+        l_result.p_configuration_events_by_name = p_configuration_events_by_name
+        l_result.p_location = p_location
+        l_result.p_dynamic_location_closure = p_dynamic_location_closure
+        return l_result
+    }
+
+}

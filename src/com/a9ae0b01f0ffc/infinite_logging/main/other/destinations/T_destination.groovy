@@ -1,0 +1,95 @@
+package other.destinations
+
+import base.T_logging_base_6_util
+import other.T_async_storage
+import other.T_event
+import other.T_trace
+import other.formatters.T_event_formatter
+
+abstract class T_destination extends T_logging_base_6_util {
+
+    T_event_formatter p_formatter = GC_NULL_OBJ_REF as T_event_formatter
+    HashMap<String, T_event> p_configuration_events_by_name = new HashMap<String, T_event>()
+    String p_location = GC_EMPTY_STRING
+    T_async_storage p_async_storage = GC_NULL_OBJ_REF as T_async_storage
+    Boolean p_is_auto_zip = GC_FALSE
+    private Date p_init_date = new Date()
+    Closure p_dynamic_location_closure = GC_NULL_OBJ_REF as Closure
+
+    void set_dynamic_location_closure(Closure i_closure) {
+        p_dynamic_location_closure = i_closure
+    }
+
+    Closure get_dynamic_location_closure() {
+        return p_dynamic_location_closure
+    }
+
+    Date get_init_date() {
+        return p_init_date
+    }
+
+    void deinit() {
+        if (is_not_null(p_async_storage)) {
+            p_async_storage.interrupt()
+        }
+    }
+
+    Boolean is_auto_zip() {
+        return p_is_auto_zip
+    }
+
+    void set_auto_zip(Boolean i_is_auto_zip) {
+        p_is_auto_zip = i_is_auto_zip
+    }
+
+    void set_async_storage(T_async_storage i_async_storage) {
+        p_async_storage = i_async_storage
+    }
+
+    void add_configuration_event(T_event i_event) {
+        p_configuration_events_by_name.put(i_event.get_event_type(), i_event)
+    }
+
+    void set_formatter(T_event_formatter i_formatter) {
+        p_formatter = i_formatter
+    }
+
+    abstract T_destination clone_with_no_async()
+
+    abstract void store(T_event i_event)
+
+    void log_generic(T_event i_event) {
+        if (p_configuration_events_by_name.containsKey(i_event.get_event_type()) || p_configuration_events_by_name.containsKey(GC_EVENT_TYPE_ALL)) {
+            if (is_not_null(p_async_storage)) {
+                i_event.set_context_map(l().get_context_map().clone() as HashMap<String, T_trace>)
+                /*\/\/\/Prevent changes on trace objects from separate threads*/
+                i_event.serialize_traces()
+                /*/\/\/\This slows down the main thread, however without this there are Concurrent Modification exceptions on ArrayList serialization (when array list was logged but is being accessed from another thread)*/
+                p_async_storage.p_event_queue.add(i_event)
+                synchronized (p_async_storage) {
+                    p_async_storage.notify()
+                }
+            } else {
+                i_event.set_context_map(l().get_context_map())
+                store(i_event)
+            }
+        }
+    }
+
+    void set_location(String i_location) {
+        p_location = i_location
+    }
+
+    void flush() {
+        if (is_not_null(p_async_storage)) {
+            synchronized (p_async_storage) {
+                p_async_storage.notify()
+            }
+        }
+        if (is_not_null(p_async_storage) && p_async_storage.p_mode == GC_ASYNC_MODE_FLUSH) {
+            p_async_storage.start()
+            p_async_storage = p_async_storage.clone()
+        }
+    }
+
+}
