@@ -37,6 +37,11 @@ class T_logging_base_6_util extends T_logging_base_5_context {
     final String process_location(String i_location, T_event i_source_event, T_destination i_destination) {
         Date l_current_date = new Date()
         String l_location = i_location
+        HashMap l_binding_map = new HashMap()
+        l_binding_map.put("location", i_location)
+        l_binding_map.put("source_event", i_source_event)
+        l_binding_map.put("destination", i_destination)
+        i_location = get_template_manager().get_template(i_location).make(l_binding_map).toString()
         l_location = l_location.replace(GC_SUBST_USERNAME, GC_USERNAME)
         l_location = l_location.replace(GC_SUBST_DATE, l_current_date.format(GC_FILENAME_DATE_FORMAT))
         l_location = l_location.replace(GC_SUBST_TIME, i_destination.get_init_date().format(GC_FILENAME_TIME_FORMAT))

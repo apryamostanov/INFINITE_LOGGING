@@ -75,5 +75,14 @@ class T_logging_base_4_const extends T_common_base_3_utils {
     static final String GC_DESTINATION_SHELL = "shell"
     static final String GC_EVENT_FORMATTER_CSV = "csv"
     static final String GC_DEVENT_FORMATTER_XML_HIERARCHICAL = "xml_hierarchical"
+    static final String GC_DEFAULT_LOGGER_CONFIG = """<?xml version="1.0" encoding="UTF-8"?>
+<logger>
+    <shell formatter="csv">
+        <info/>
+        <warning/>
+        <method_error/>
+    </shell>
+</logger>
+"""
 
 }

@@ -63,6 +63,10 @@ class T_logger extends T_logging_base_6_util {
         p_destinations.add(T_destination)
     }
 
+    ArrayList<T_destination> get_destinations() {
+        return p_destinations
+    }
+
     T_execution_node get_current_execution_node() {
         return nvl(p_current_execution_node, PC_INITIAL_STARTING_EXECUTION_NODE) as T_execution_node
     }

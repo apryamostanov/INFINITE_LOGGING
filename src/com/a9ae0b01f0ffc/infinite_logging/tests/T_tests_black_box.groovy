@@ -5,6 +5,11 @@ import org.junit.Test
 class T_tests_black_box {
 
     @Test
+    void test_000() {
+        T_logging_base_5_context.l().log_warning(T_logging_base_5_context.s.Uninitialized_test)
+    }
+
+    @Test
     void test_001() {
         T_logging_base_5_context.init_custom("C:/COMPILE/with_logging/commons.conf")
         T_logging_base_5_context.l().log_trace("z")

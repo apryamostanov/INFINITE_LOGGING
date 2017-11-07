@@ -25,6 +25,9 @@ class T_logging_conf extends T_common_conf {
     String GC_ASYNC_STORER_STORE_PERIOD_MILLIS = "50"
     String GC_DYNAMIC_TOKEN_CODE
 
+    T_logging_conf() {
+    }
+
     T_logging_conf(String i_conf_file_name) {
         super(i_conf_file_name)
         GC_BLACK_BOX_ENABLED = nvl_empty_map(get_conf().black_box_enabled, GC_BLACK_BOX_ENABLED)

@@ -92,4 +92,7 @@ abstract class T_destination extends T_logging_base_6_util {
         }
     }
 
+    String get_location() {
+        return p_location
+    }
 }

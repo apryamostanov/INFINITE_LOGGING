@@ -35,7 +35,11 @@ class T_async_storage extends Thread {
     void run() {
         try {
             Boolean LC_IS_NO_ASYNC_TRUE = GC_TRUE
-            init_custom(p_conf_name, LC_IS_NO_ASYNC_TRUE)
+            if (is_not_null(p_conf_name)) {
+                init_custom(p_conf_name, LC_IS_NO_ASYNC_TRUE)
+            } else {
+                init_default()
+            }
             if (p_mode == GC_ASYNC_MODE_REALTIME) {
                 while (GC_TRUE) {
                     while (not(p_event_queue.isEmpty())) {

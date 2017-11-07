@@ -55,6 +55,7 @@ class T_logger_builder extends T_logging_base_6_util {
         }
         if (!T_destination_xml.@location.isEmpty()) {
             l_destination.set_location(T_destination_xml.@location.text())
+
         }
         if (!T_destination_xml.@auto_zip.isEmpty()) {
             if (T_destination_xml.@auto_zip.text() == GC_TRUE_STRING) {
